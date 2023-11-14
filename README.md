@@ -6,7 +6,7 @@ jmeter damengdb插件
 
 /***************************************
 
-**使用方法： **
+**使用方法：** <br /> 
 1.clone工程到本地。<br /> 
 2.使用maven打成jar包。 <br /> 
 3.copy jar包到 jmeter安装目录 \lib\ext 下。 <br /> 
