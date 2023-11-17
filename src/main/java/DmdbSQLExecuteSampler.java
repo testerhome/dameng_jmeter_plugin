@@ -12,30 +12,30 @@ import java.sql.*;
 @Slf4j
 public class DmdbSQLExecuteSampler implements JavaSamplerClient {
 
-    private Connection conn = null;
+//    private Connection conn = null;
     private String sql;
 
 
     @Override
     public void setupTest(JavaSamplerContext javaSamplerContext) {
         //拼接出url jdbc:dm://192.168.1.100:12345
-        String url = "jdbc:dm://" + javaSamplerContext.getParameter("host") + ":" + javaSamplerContext.getParameter("port");
-
-        String username = javaSamplerContext.getParameter("username");
-        String password = javaSamplerContext.getParameter("password");
-        String driver = javaSamplerContext.getParameter("driver");
+//        String url = "jdbc:dm://" + javaSamplerContext.getParameter("host") + ":" + javaSamplerContext.getParameter("port");
+//
+//        String username = javaSamplerContext.getParameter("username");
+//        String password = javaSamplerContext.getParameter("password");
+//        String driver = javaSamplerContext.getParameter("driver");
         sql = javaSamplerContext.getParameter("sql");
-        try {
-            Class.forName(driver);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            conn = DriverManager.getConnection(url, username, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            conn = DriverManager.getConnection(url, username, password);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -44,14 +44,19 @@ public class DmdbSQLExecuteSampler implements JavaSamplerClient {
 
         log.info("runTest query");
         SampleResult result = new SampleResult();
-        result.setSampleLabel("DMdbSQLExecuteSampler");
+        //用户起的sample名作为结果名
+        result.setSampleLabel(javaSamplerContext.getJMeterContext().getCurrentSampler().getName());
         result.sampleStart();
 
-
+        Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         try {
 //            conn = DriverManager.getConnection("jdbc:dm://localhost:5236", "SYSDBA", "123456789");
+            //从druid连接池中拿到连接
+            conn = DruidUtils.getConnection();
+            log.info("-----------------> conn="+conn);
+
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
 //            rs = stmt.executeQuery("select * from dmhr.employee");
@@ -76,6 +81,7 @@ public class DmdbSQLExecuteSampler implements JavaSamplerClient {
             }
             log.info(sb.toString());
             rs.close();
+            conn.close();
             result.setResponseData(sb.toString().getBytes(StandardCharsets.UTF_8));
             result.setSuccessful(true);
             result.sampleEnd();
@@ -93,21 +99,21 @@ public class DmdbSQLExecuteSampler implements JavaSamplerClient {
 
     @Override
     public void teardownTest(JavaSamplerContext javaSamplerContext) {
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            conn.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
     public Arguments getDefaultParameters() {
         Arguments params = new Arguments();
-        params.addArgument("host", "localhost");
-        params.addArgument("port", "5236");
-        params.addArgument("username", "SYSDBA");
-        params.addArgument("password", "123456789");
-        params.addArgument("driver", "dm.jdbc.driver.DmDriver");
+//        params.addArgument("host", "localhost");
+//        params.addArgument("port", "5236");
+//        params.addArgument("username", "SYSDBA");
+//        params.addArgument("password", "123456789");
+//        params.addArgument("driver", "dm.jdbc.driver.DmDriver");
         params.addArgument("sql", "select * from dmhr.employee");
         return params;
     }

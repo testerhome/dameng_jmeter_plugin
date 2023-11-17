@@ -63,6 +63,13 @@
             <version>1.7.21</version>
         </dependency>
 
+        <!--添加数据库连接池-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.29</version>
+        </dependency>
+
     </dependencies>
 
 </project>
